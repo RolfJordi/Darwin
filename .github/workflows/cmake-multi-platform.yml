@@ -36,7 +36,7 @@ jobs:
             c_compiler: cl
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Show files before
       run: ls -ltrR ${{ github.workspace }}
@@ -59,7 +59,13 @@ jobs:
     - name: Git recurive update
       run: git submodule update --init --recursive
 
-
+    - name: apt install
+      run: |
+        sudo apt update 
+        sudo apt install -y libxmu-dev libxi-dev libgl-dev \
+        git build-essential libx11-xcb-dev \
+        libxkbcommon-dev libwayland-dev libxrandr-dev
+        
     - name: Setup vcpkg
       run: |
         git clone https://github.com/microsoft/vcpkg.git
@@ -67,12 +73,7 @@ jobs:
         ${{ matrix.vcpkg_script }}
         ./vcpkg integrate install
 
-    - name: apt install
-      run: |
-         sudo apt update 
-         sudo apt install -y libxmu-dev libxi-dev libgl-dev \
-         git build-essential libx11-xcb-dev \
-         libxkbcommon-dev libwayland-dev libxrandr-dev
+
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
